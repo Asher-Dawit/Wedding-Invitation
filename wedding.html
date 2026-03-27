@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Abel & Hana - Wedding Invitation</title>
+  <!-- Tailwind CSS + Font Awesome + Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+  <!-- Custom CSS override for Tailwind & animations -->
+  <style>
+    * {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .font-script {
+      font-family: 'Dancing Script', cursive;
+    }
+    /* Elegant custom shadows */
+    .elegant-shadow {
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .card-hover {
+      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    }
+    .card-hover:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 25px 35px -12px rgba(0, 0, 0, 0.2);
+    }
+    /* Timeline styling */
+    .timeline-item {
+      position: relative;
+      padding-left: 2rem;
+      border-left: 2px solid #e9c7c2;
+      margin-bottom: 2rem;
+      transition: all 0.3s;
+    }
+    .timeline-icon {
+      position: absolute;
+      left: -1rem;
+      top: 0;
+      width: 2rem;
+      height: 2rem;
+      background: #f9e2d5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #b57c6c;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .dark .timeline-icon {
+      background: #3f2e2a;
+      color: #e9bcaf;
+    }
+    /* Fade-up animation */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Gallery lightbox */
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+    .lightbox.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 16px;
+      box-shadow: 0 25px 40px rgba(0,0,0,0.3);
+    }
+    /* floating controls */
+    .floating-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 200;
+      background: #fff;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: 0.2s;
+      backdrop-filter: blur(4px);
+    }
+    .dark .floating-btn {
+      background: #2a2a2a;
+      color: #f0d5c5;
+    }
+    .floating-btn:hover {
+      transform: scale(1.05);
+    }
+    /* RSVP success message */
+    .toast-message {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #2c7a4d;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      z-index: 300;
+      opacity: 0;
+      transition: 0.3s;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+    }
+    .toast-message.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    /* dark mode overrides */
+    .dark {
+      background-color: #1e1917;
+      color: #f5e9e3;
+    }
+    .dark .bg-white, .dark .bg-cream {
+      background-color: #2a2422;
+    }
+    .dark .bg-rose-50 {
+      background-color: #2b211f;
+    }
+    .dark .text-gray-700, .dark .text-gray-600 {
+      color: #e4cfc4;
+    }
+    .dark .border-gray-200 {
+      border-color: #4a3a35;
+    }
+    .dark .elegant-shadow {
+      box-shadow: 0 20px 30px -10px rgba(0,0,0,0.5);
+    }
+    /* navbar transition */
+    .navbar-scrolled {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    .dark .navbar-scrolled {
+      background: rgba(30, 25, 23, 0.9);
+    }
+    /* custom map container */
+    .map-container iframe {
+      border-radius: 28px;
+      width: 100%;
+      height: 300px;
+      border: 0;
+    }
+  </style>
+</head>
+<body class="bg-rose-50 text-gray-800 transition-colors duration-300">
+
+  <!-- Floating Music Button & Dark Mode Toggle -->
+  <div class="floating-btn" id="musicToggle" style="bottom: 6rem; right: 2rem;">
+    <i class="fas fa-music text-rose-400 text-xl"></i>
+  </div>
+  <div class="floating-btn" id="darkModeToggle" style="bottom: 2rem; right: 2rem;">
+    <i class="fas fa-moon text-amber-600 text-xl"></i>
+  </div>
+  
+  <!-- Background music (hidden autoplay disabled, user must click) -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="https://www.boomplay.com/songs/172967120?srModel=COPYLINK&srList=WEB&share_content=music&share_channel=copylink&share_platform=web" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- Toast container for RSVP -->
+  <div id="toastMessage" class="toast-message">✨ Thank you! We can't wait to celebrate ✨</div>
+
+  <!-- Floating Navbar (sticky) -->
+  <nav id="navbar" class="fixed top-0 w-full z-50 py-4 px-6 flex justify-center gap-8 flex-wrap transition-all duration-300 bg-white/70 backdrop-blur-md shadow-sm">
+    <a href="#home" class="text-rose-700 hover:text-amber-600 font-medium transition">Home</a>
+    <a href="#story" class="text-rose-700 hover:text-amber-600 font-medium transition">Our Story</a>
+    <a href="#events" class="text-rose-700 hover:text-amber-600 font-medium transition">Events</a>
+    <a href="#gallery" class="text-rose-700 hover:text-amber-600 font-medium transition">Gallery</a>
+    <a href="#rsvp" class="text-rose-700 hover:text-amber-600 font-medium transition">RSVP</a>
+    <a href="#contact" class="text-rose-700 hover:text-amber-600 font-medium transition">Contact</a>
+  </nav>
+
+  <main>
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative bg-cover bg-center bg-no-repeat" style="background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+      <div class="text-center text-white px-6 animate__animated">
+        <h1 class="font-script text-6xl md:text-7xl lg:text-8xl drop-shadow-lg">Abel & Hana</h1>
+        <p class="text-xl md:text-2xl mt-4 tracking-wide font-light">Together with their families, invite you to celebrate their love</p>
+        <div class="mt-8 space-y-2 text-lg md:text-xl">
+          <p><i class="fas fa-calendar-alt mr-2"></i> Saturday, may 18, 2026 | 4:00 AM</p>
+          <p><i class="fas fa-map-marker-alt mr-2"></i> The Haile-Grand, Addis Ababa</p>
+        </div>
+        <button id="viewInviteBtn" class="mt-12 bg-white/20 backdrop-blur-sm border border-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-white hover:text-rose-700 transition duration-300 shadow-lg">View Invitation <i class="fas fa-arrow-down ml-2"></i></button>
+      </div>
+    </section>
+
+    <!-- Our Story Timeline -->
+    <section id="story" class="py-24 px-6 max-w-6xl mx-auto">
+      <div class="text-center mb-16 fade-up">
+        <h2 class="font-script text-5xl text-rose-600">Our Story</h2>
+        <div class="w-24 h-1 bg-rose-300 mx-auto mt-3 rounded-full"></div>
+        <p class="mt-4 text-gray-600 max-w-2xl mx-auto">A journey of love, laughter, and forever</p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-10">
+        <div class="fade-up">
+          <div class="timeline-item">
+            <div class="timeline-icon"><i class="fas fa-coffee"></i></div>
+            <h3 class="text-2xl font-bold text-rose-700">First Meeting</h3>
+            <p class="text-gray-600 dark:text-gray-300">March 2021 — A rainy afternoon at a local café, where our eyes met over a shared love for vanilla lattes.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-icon"><i class="fas fa-ring"></i></div>
+            <h3 class="text-2xl font-bold text-rose-700">The Proposal</h3>
+            <p class="text-gray-600 dark:text-gray-300">December 2023 — Under the Northern Lights, Abel got down on one knee and Hana said yes!</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-icon"><i class="fas fa-heart"></i></div>
+            <h3 class="text-2xl font-bold text-rose-700">Forever Starts</h3>
+            <p class="text-gray-600 dark:text-gray-300">may 2026 — We become one. Join us as we say "I do" and begin our greatest adventure.</p>
+          </div>
+        </div>
+        <div class="flex justify-center items-center fade-up">
+          <img src="https://images.unsplash.com/photo-1537633552985-df8429e8048b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Couple" class="rounded-2xl shadow-2xl object-cover w-full max-h-96 elegant-shadow">
+        </div>
+      </div>
+    </section>
+
+    <!-- Event Details + Map -->
+    <section id="events" class="py-24 bg-white/50 dark:bg-[#241e1b]">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-12 fade-up">
+          <h2 class="font-script text-5xl text-rose-600">Event Details</h2>
+          <div class="w-24 h-1 bg-rose-300 mx-auto mt-3"></div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-12">
+          <div class="bg-cream bg-white p-8 rounded-3xl elegant-shadow fade-up">
+            <i class="fas fa-calendar-check text-4xl text-rose-500 mb-3"></i>
+            <h3 class="text-3xl font-bold">Ceremony & Reception</h3>
+            <p class="text-xl mt-2">Saturday, may 18, 2026</p>
+            <p class="text-gray-600 dark:text-gray-300">Ceremony begins at 4:00 AM | Dinner & dancing to follow</p>
+            <div class="mt-6 border-t pt-4 border-rose-100">
+              <p><i class="fas fa-location-dot text-rose-500 mr-2"></i> The Haile-Grand, Lamberet Road, Addis Ababa, Ethiopia</p>
+              <p class="mt-2"><i class="fas fa-tshirt text-rose-500 mr-2"></i> Dress Code: Formal / Black Tie Optional (Soft pastels & elegance encouraged)</p>
+            </div>
+          </div>
+          <div class="map-container rounded-3xl overflow-hidden elegant-shadow fade-up">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.5807425079367!2d38.763672214831!3d9.03125279352393!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b85b2b4d23c99%3A0x2d233e79fa5f45e!2sBole%20Medhanialem%20Area!5e0!3m2!1sen!2set!4v1743104432162!5m2!1sen!2set" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery (Responsive Grid) -->
+    <section id="gallery" class="py-24 px-6 max-w-7xl mx-auto">
+      <div class="text-center mb-12 fade-up">
+        <h2 class="font-script text-5xl text-rose-600">Moments Together</h2>
+        <div class="w-24 h-1 bg-rose-300 mx-auto mt-3"></div>
+        <p class="mt-3 text-gray-600">A glimpse into our cherished memories</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="gallery-item cursor-pointer rounded-xl overflow-hidden elegant-shadow card-hover fade-up">
+          <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Engagement" class="w-full h-64 object-cover transition hover:scale-105 duration-500">
+        </div>
+        <div class="gallery-item cursor-pointer rounded-xl overflow-hidden elegant-shadow card-hover fade-up">
+          <img src="https://plus.unsplash.com/premium_photo-1675851210855-e7727076e829?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8d2VkZGluZyUyMGNvdXBsZXxlbnwwfHwwfHx8MA%3D%3D" alt="Couple walk" class="w-full h-64 object-cover transition hover:scale-105 duration-500">
+        </div>
+        <div class="gallery-item cursor-pointer rounded-xl overflow-hidden elegant-shadow card-hover fade-up">
+          <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Sunset" class="w-full h-64 object-cover transition hover:scale-105 duration-500">
+        </div>
+        <div class="gallery-item cursor-pointer rounded-xl overflow-hidden elegant-shadow card-hover fade-up">
+          <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Wedding prep" class="w-full h-64 object-cover transition hover:scale-105 duration-500">
+        </div>
+      </div>
+    </section>
+
+    <!-- Countdown Timer -->
+    <section class="py-16 bg-gradient-to-r from-rose-100 to-amber-100 dark:from-[#2c221f] dark:to-[#362a25]">
+      <div class="text-center">
+        <h2 class="font-script text-4xl text-rose-700">Counting Down to Forever</h2>
+        <div id="countdown" class="flex justify-center gap-6 mt-8 flex-wrap text-3xl md:text-5xl font-bold text-gray-800 dark:text-white">
+          <div><span id="days">00</span><span class="text-base block">Days</span></div>
+          <div><span id="hours">00</span><span class="text-base block">Hours</span></div>
+          <div><span id="minutes">00</span><span class="text-base block">Mins</span></div>
+          <div><span id="seconds">00</span><span class="text-base block">Secs</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RSVP Section -->
+    <section id="rsvp" class="py-24 px-6 max-w-4xl mx-auto">
+      <div class="bg-white dark:bg-[#2a2422] rounded-3xl elegant-shadow p-8 md:p-12 fade-up">
+        <h2 class="font-script text-5xl text-center text-rose-600">RSVP</h2>
+        <p class="text-center text-gray-500 mb-8">Kindly let us know if you'll be joining us by October 1st</p>
+        <form id="rsvpForm" class="space-y-6">
+          <div>
+            <label class="block font-medium mb-1">Full Name *</label>
+            <input type="text" id="name" required class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-rose-300 outline-none">
+          </div>
+          <div>
+            <label class="block font-medium mb-1">Email Address *</label>
+            <input type="email" id="email" required class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-rose-300 outline-none">
+          </div>
+          <div>
+            <label class="block font-medium mb-1">Number of Guests (including you)</label>
+            <input type="number" id="guests" min="1" value="1" class="w-full border border-gray-300 rounded-xl px-4 py-3">
+          </div>
+          <div>
+            <label class="block font-medium mb-1">Will you attend?</label>
+            <select id="attending" class="w-full border border-gray-300 rounded-xl px-4 py-3">
+              <option value="yes">Gladly Attending</option>
+              <option value="no">Sadly Declining</option>
+            </select>
+          </div>
+          <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-3 rounded-xl transition text-lg">Send RSVP</button>
+        </form>
+        <p id="rsvpMessage" class="text-center mt-4 text-green-600 hidden"></p>
+      </div>
+    </section>
+
+    <!-- Gift Registry -->
+    <section id="gift" class="py-16 px-6 max-w-5xl mx-auto text-center">
+      <div class="bg-rose-50 dark:bg-[#2b211f] p-10 rounded-3xl elegant-shadow fade-up">
+        <i class="fas fa-gift text-5xl text-rose-500 mb-3"></i>
+        <h2 class="font-script text-4xl text-rose-700">Gift Registry</h2>
+        <p class="max-w-2xl mx-auto mt-3">Your presence at our wedding is the greatest gift. If you wish to honor us with a gift, a contribution towards our future home would be deeply appreciated.</p>
+        <div class="mt-6 bg-white dark:bg-[#382e2a] p-5 rounded-2xl inline-block text-left">
+          <p><i class="fas fa-university mr-2 text-rose-500"></i> Bank: Commercial Bank of Ethiopia</p>
+          <p><i class="fas fa-user mr-2 text-rose-500"></i> Account Name: Abel & Hana Union</p>
+          <p><i class="fas fa-credit-card mr-2 text-rose-500"></i> Account: 1000 1234 5678 9012</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 px-6 max-w-4xl mx-auto border-t border-rose-100">
+      <div class="text-center fade-up">
+        <h2 class="font-script text-5xl text-rose-600">Contact Us</h2>
+        <div class="w-24 h-1 bg-rose-300 mx-auto mt-3 mb-6"></div>
+        <p class="text-gray-600">For any questions, feel free to reach out</p>
+        <div class="flex flex-col md:flex-row justify-center gap-8 mt-8">
+          <div><i class="fas fa-phone-alt text-rose-500 text-2xl"></i><p class="font-medium">+251 912 345 678</p><span class="text-sm">Abel</span></div>
+          <div><i class="fas fa-envelope text-rose-500 text-2xl"></i><p class="font-medium">hana.abel@wedding.com</p><span class="text-sm">Wedding Inquiries</span></div>
+          <div><i class="fab fa-instagram text-rose-500 text-2xl"></i><p class="font-medium">@abelandhana</p><span class="text-sm">Follow our journey</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="text-center py-8 text-gray-500 text-sm border-t">
+    <p>© 2026 Abel & Hana — With love, from us to you. #AbelAndHanaWedding</p>
+  </footer>
+
+  <!-- Lightbox modal -->
+  <div id="lightbox" class="lightbox">
+    <img id="lightboxImg" src="" alt="expanded view">
+  </div>
+
+  <script>
+    // Countdown Timer - robust version
+    function updateCountdown() {
+      const targetDate = new Date(2026, 9, 18, 16, 0, 0); // Oct 18, 2026, 4:00 AM local time
+      const now = new Date();
+      const diff = targetDate - now;
+
+      const daysElem = document.getElementById('days');
+      const hoursElem = document.getElementById('hours');
+      const minutesElem = document.getElementById('minutes');
+      const secondsElem = document.getElementById('seconds');
+
+      if (!daysElem || !hoursElem || !minutesElem || !secondsElem) {
+        console.error('Countdown elements not found!');
+        return;
+      }
+
+      if (diff <= 0) {
+        daysElem.innerText = '00';
+        hoursElem.innerText = '00';
+        minutesElem.innerText = '00';
+        secondsElem.innerText = '00';
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (86400000)) / (3600000));
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
+
+      daysElem.innerText = days < 10 ? '0' + days : days;
+      hoursElem.innerText = hours < 10 ? '0' + hours : hours;
+      minutesElem.innerText = minutes < 10 ? '0' + minutes : minutes;
+      secondsElem.innerText = seconds < 10 ? '0' + seconds : seconds;
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // Intersection Observer for fade-up animations
+    const fadeElements = document.querySelectorAll('.fade-up');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+    fadeElements.forEach(el => observer.observe(el));
+
+    // Navbar background on scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('navbar-scrolled');
+      } else {
+        navbar.classList.remove('navbar-scrolled');
+      }
+    });
+
+    // Dark Mode Toggle
+    const darkToggle = document.getElementById('darkModeToggle');
+    darkToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      const icon = darkToggle.querySelector('i');
+      if (document.body.classList.contains('dark')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark');
+      darkToggle.querySelector('i').classList.remove('fa-moon');
+      darkToggle.querySelector('i').classList.add('fa-sun');
+    }
+
+    // Music toggle
+    const music = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicToggle');
+    let isPlaying = false;
+    musicBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        music.pause();
+        musicBtn.innerHTML = '<i class="fas fa-music-slash text-rose-400 text-xl"></i>';
+      } else {
+        music.play().catch(e => console.log("Autoplay blocked, user interaction needed"));
+        musicBtn.innerHTML = '<i class="fas fa-music text-rose-400 text-xl"></i>';
+      }
+      isPlaying = !isPlaying;
+    });
+
+    // View Invitation button: smooth scroll to story
+    document.getElementById('viewInviteBtn').addEventListener('click', () => {
+      document.getElementById('story').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Gallery Lightbox
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    galleryItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const imgSrc = item.querySelector('img').src;
+        lightboxImg.src = imgSrc;
+        lightbox.classList.add('active');
+      });
+    });
+    lightbox.addEventListener('click', () => {
+      lightbox.classList.remove('active');
+    });
+
+    // RSVP Form – sends data to backend
+    const rsvpForm = document.getElementById('rsvpForm');
+    const toast = document.getElementById('toastMessage');
+    rsvpForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const guests = document.getElementById('guests').value;
+      const attending = document.getElementById('attending').value;
+
+      if (!name || !email) {
+        alert('Please fill your name and email');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:3001/api/rsvp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, guests, attending })
+        });
+        const data = await response.json();
+        if (data.success) {
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 3000);
+          rsvpForm.reset();
+          const msgDiv = document.getElementById('rsvpMessage');
+          msgDiv.innerText = `💖 Thank you ${name}! We've received your response. 💖`;
+          msgDiv.classList.remove('hidden');
+          setTimeout(() => msgDiv.classList.add('hidden'), 4000);
+        } else {
+          alert('Something went wrong. Please try again.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Could not connect to server. Please make sure the backend is running.');
+      }
+    });
+
+    // Personalized welcome (optional: ask guest name on first visit)
+    if (!localStorage.getItem('guestVisited')) {
+      setTimeout(() => {
+        let guest = prompt("Welcome to Abel & Hana's wedding! Please enter your name to personalize your experience:");
+        if (guest && guest.trim()) {
+          const heroTag = document.querySelector('#home p');
+          if (heroTag) heroTag.innerHTML = ` ${guest}, together with our families, we invite you to celebrate our love `;
+          localStorage.setItem('guestVisited', guest);
+        }
+      }, 800);
+    } else {
+      const savedGuest = localStorage.getItem('guestVisited');
+      if (savedGuest) {
+        const heroTag = document.querySelector('#home p');
+        if (heroTag) heroTag.innerHTML = `✨ ${savedGuest}, together with our families, we invite you to celebrate our love ✨`;
+      }
+    }
+
+    // small scroll animation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  </script>
+</body>
+</html>
